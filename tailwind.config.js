@@ -4,7 +4,10 @@ module.exports = {
   },
   darkMode: false,
   theme: {
-    extends: {}
+    extends: {},
+    gridTemplateColumns: {
+      'cards': 'repeat(auto-fill, minmax(300px, auto))'
+    }
   },
   variants: {
     extends: {}
