@@ -1,10 +1,25 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import clientsAxios from '../config/axios';
+import { Alert } from './Alert';
+
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { Alert } from './Alert';
 
 export const Formulario = () => {
 
+  const navigate = useNavigate();
+
+  // Envias los datos al servidor
+  const handleSubmit = (values) => {
+    clientsAxios.post('/clientes', values)
+      .then(() => { 
+        navigate('/clientes', {
+          replace: 'true'
+        });
+      })
+      .catch((error) => console.log(error))
+  }
   // Controla los errores del formulario
   const errorForm = (error, touched) => (
     (error && touched) && <Alert> { error } </Alert>
@@ -17,17 +32,16 @@ export const Formulario = () => {
               .required('Nombre es requerido'),
     empresa: Yup.string()
               .min(3, 'Debe contener minimo 3 caracteres')
-              .required('Nombre es requerido'),
+              .required('Empresa es requerida'),
     email: Yup.string()
               .email( 'Debe ser un email valido')
               .required('Email es requerido'),
     phone: Yup.number().typeError('Numero no valido')
               .positive('Numero no valido')
               .integer('Numero no valido')
-              .min(8, 'Debe tener como minimo 8 digitos')
-              .max(10,'Debe tener un maximo 10 digitos'),
+              .min(8, 'Debe tener como minimo 8 digitos'),
     notes: Yup.string()
-              .min(150, 'Debe terner 150 caracteres')
+              .min(25, 'Debe terner 25 caracteres')
               .required('Comentarios es requerido')
   });
 
@@ -45,7 +59,10 @@ export const Formulario = () => {
           phone: '',
           notes: '',
         }}
-        onSubmit={(values) => { console.log(values) }}
+        onSubmit={async (values, { resetForm }) => {
+          await handleSubmit(values);
+          resetForm();
+        }}
         validationSchema={newSchemaClient}
       >
         {({errors, touched}) => (
@@ -127,7 +144,7 @@ export const Formulario = () => {
             {errorForm(errors.notes, touched.notes)}
             <button
               type='submit'
-              className='bg-gray-900 p-3 text-white cursor-pointer hover:bg-gray-700 transition ease-in-out delay-100 w-full rounded uppercase'
+              className={'cursor-pointer bg-gray-900 p-3 text-white hover:bg-gray-700 transition ease-in-out delay-100 w-full rounded uppercase' }
             >
               Agregar Cliente
             </button>
