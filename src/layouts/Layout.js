@@ -1,11 +1,19 @@
 import React from 'react'
 import { Outlet, Link, useLocation } from 'react-router-dom';
+// import { Alert } from '../components/Alert';
 
 export const Layout = () => {
 
   const location = useLocation();
 
   const { pathname } = location;
+
+  /*
+    Para el refactor cuando utilice context para todas las funciones
+    <article className='absolute top-0 right-0 mr-5 mt-2 w-96'>
+      <Alert> Cliente no encontrado </Alert>
+    </article>
+  */
 
   return (
     <div className='lg:flex md:min-h-screen'>
@@ -31,6 +39,7 @@ export const Layout = () => {
       </aside>
 
       <main className='lg:w-3/4 p-10 lg:h-screen lg:overflow-y-scroll overflow-y-hidden'>
+        
         <Outlet/>  
       </main>
 
