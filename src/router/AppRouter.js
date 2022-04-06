@@ -5,6 +5,7 @@ import { Layout } from './../layouts/Layout';
 import { Inicio } from '../pages/Inicio/Inicio';
 import { NuevoCliente } from './../pages/NuevoCliente/NuevoCliente';
 import { EditarCliente } from './../pages/EditarCliente/EditarCliente';
+import { VerCliente } from '../pages/VerCliente/VerCliente';
 
 
 export const AppRouter = () => {
@@ -16,6 +17,7 @@ export const AppRouter = () => {
           <Route index element={<Inicio />} />
           <Route path='nuevocliente' element={<NuevoCliente />} />
           <Route path='editarcliente/:id' element={<EditarCliente />} />
+          <Route path=':id' element={<VerCliente />} />
         </Route>
 
         <Route
