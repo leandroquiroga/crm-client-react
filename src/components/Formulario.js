@@ -6,19 +6,21 @@ import { Alert } from './Alert';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
-export const Formulario = () => {
+export const Formulario = ({client, title}) => {
 
   const navigate = useNavigate();
 
   // Envias los datos al servidor
-  const handleSubmit = (values) => {
-    clientsAxios.post('/clientes', values)
-      .then(() => { 
-        navigate('/clientes', {
-          replace: 'true'
-        });
-      })
-      .catch((error) => console.log(error))
+  const handleSubmit = async (values) => {
+    try {
+      // Si existe el cliente edita el contenido, en caso contrario lo agrega
+      (client.id)
+        ? clientsAxios.put(`/clientes/${client.id}`, values)
+        : clientsAxios.post('/clientes', values);
+      navigate('/clientes');
+    } catch (error) {
+        console.log(error)
+    }
   }
   // Controla los errores del formulario
   const errorForm = (error, touched) => (
@@ -49,16 +51,17 @@ export const Formulario = () => {
   return (  
 
     <article className='my-5 px-5 py-10 bg-slate-50 rounded shadow-lg md:w-3/4 mx-auto'>
-      <h1 className='text-gray-900 text-center uppercase font-bold'> Agragar Cliente </h1>
-    
+      <h1 className='text-gray-900 text-center uppercase font-bold'> {title} </h1>
+
       <Formik
         initialValues={{
-          name: '',
-          empresa: '',
-          email: '',
-          phone: '',
-          notes: '',
+          name: client?.name ?? '',
+          empresa: client?.empresa ?? '',
+          email: client?.email ?? '',
+          phone: client?.phone ?? '',
+          notes: client?.notes ?? '',
         }}
+        enableReinitialize={true}
         onSubmit={async (values, { resetForm }) => {
           await handleSubmit(values);
           resetForm();
@@ -144,15 +147,19 @@ export const Formulario = () => {
             {errorForm(errors.notes, touched.notes)}
             <button
               type='submit'
-              className={'cursor-pointer bg-gray-900 p-3 text-white hover:bg-gray-700 transition ease-in-out delay-100 w-full rounded uppercase' }
+              className='cursor-pointer bg-gray-900 p-3 text-white hover:bg-gray-700 transition ease-in-out delay-100 w-full rounded'
             >
-              Agregar Cliente
+              {title}
             </button>
           
           </Form>
         )}
       </Formik>
     </article>
-
   )
+}
+
+Formulario.defaultProps = {
+  client: {},
+  title: 'Agregar Cliente'
 }
